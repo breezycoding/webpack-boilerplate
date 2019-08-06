@@ -3,8 +3,6 @@ module.exports = () => {
     const { CleanWebpackPlugin } = require("clean-webpack-plugin");
     const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-    console.log("got in dev");
-
     return{
         entry:"./src/index.js",
         output:{
@@ -21,9 +19,15 @@ module.exports = () => {
         module: {
             rules:[
                 {
-                    test:/\.(png|jpg)$/,
+                    test:/\.(jpe?g|png|gif|svg)$/,
                     use:[
-                        "file-loader"
+                        {
+                            loader: "url-loader",
+                            options: {
+                                name:"[name].[ext]"
+                            }
+                        },
+                        "image-webpack-loader"
                     ]
                 },{
                     test:/\.css$/,
@@ -42,7 +46,7 @@ module.exports = () => {
                         loader:"babel-loader",
                         options: {
                             presets:[
-                                "@babel/env"
+                                "@babel/preset-env"
                             ],
                             plugins:[
                                 "transform-class-properties"

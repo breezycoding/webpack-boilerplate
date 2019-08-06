@@ -4,12 +4,12 @@ module.exports = () => {
     const { CleanWebpackPlugin } = require("clean-webpack-plugin");
     const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-    console.log("got in prod");
-
     return{
-        entry:"./src/index.js",
+        entry:{
+            bundle:"./src/index.js"
+        },
         output:{
-            filename:"bundle.[contenthash].js",
+            filename:"[name].[chunkhash].js",
             path:path.resolve(`${__dirname}/../dist`),
             publicPath:""
         },
@@ -24,9 +24,13 @@ module.exports = () => {
         module:{
             rules:[
                 {
-                    test:/\.(png|jpg)$/,
+                    test:/\.(jpe?g|png|gif|svg)$/,
                     use:[
-                        "file-loader"
+                        {
+                            loader: "url-loader",
+                            options: {limit: 40000}
+                        },
+                        "image-webpack-loader"
                     ]
                 },
                 {
@@ -62,7 +66,7 @@ module.exports = () => {
                         loader:"babel-loader",
                         options: {
                             presets:[
-                                "@babel/env"
+                                "@babel/preset-env"
                             ],
                             plugins:[
                                 "transform-class-properties"
@@ -74,7 +78,7 @@ module.exports = () => {
         },
         plugins: [
             new MiniCssExtractPlugin({
-                filename:"styles.[contentHash].css"
+                filename:"[name].[chunkhash].css"
             }),
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
